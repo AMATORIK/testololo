@@ -41,46 +41,33 @@ public class NotesApplicationClass implements NotesApplication {
         if (noteKind == NoteKind.LITERATURE) {
             if (documentDate.isAfter(lastDate))
                 throw new NoTimeTravellingToFutureException();
-            LiteratureNote literatureNote = new LiteratureNoteClass(noteDate.toString(), id,
-                    content, title, author, documentDate, link, quote);
+            LiteratureNote literatureNote = new LiteratureNote(id, noteDate, title, content, author, documentDate, link, quote);
             notes.add(literatureNote);
         } else if (noteKind == NoteKind.PERMANENT) {
-            PermanentNote permanentNote = new PermanentNoteClass(noteDate.toString(), id, content);
+            Note permanentNote = new PermanentNote(id, noteDate, content);
             notes.add(permanentNote);
         }
     }
 
     public void addTag(String noteId, String tagId) throws Exceptions {
-        if(!doesNoteExists(noteId)) throw new NoteDoesNotExistsException(noteId);
-        Tag tag;
-        if(getTagById(tagId) != null) {
-            tag = getTagById(tagId);
-        } else {
-            tag = new Tag(tagId);
-            tags.add(tag);
-        }
-        if (getNoteById(noteId).doesTagMatched(tag)) throw new TagAlreadyMatchedException(noteId, tagId);
-        getNoteById(noteId).matchTag(tag);
-    }
-
-    public void addTag1(String noteId, String tagId) throws Exceptions {
         Note note = getNoteById(noteId);
         if (note == null) throw new NoteDoesNotExistsException(noteId);
         Tag tag = getTagById(tagId);
         if (tag == null) {
             tag = new Tag(tagId);
             tags.add(tag);
-        } else {
-            if (note.doesTagMatched(tag)) throw new TagAlreadyMatchedException(noteId, tagId);
         }
-        getNoteById(noteId).matchTag(tag);
+        boolean created = note.addTag(tag);
+        if (!created) {
+            throw new TagAlreadyMatchedException(noteId, tagId);
+        }
     }
 
     public void removeTag(String noteId, String tagId) throws Exceptions {
-        if(!doesNoteExists(noteId)) throw new NoteDoesNotExistsException(noteId);
+        Note note = getNoteById(noteId);
+        if(note == null) throw new NoteDoesNotExistsException(noteId);
         Tag tag = getTagById(tagId);
-        if(tag == null | !getNoteById(noteId).doesTagMatched(tag)) throw new TagNotMatchedException(noteId, tagId);
-        getNoteById(noteId).unmatchTag(tag);
+        if(tag == null | !note.removeTag(tag)) throw new TagNotMatchedException(noteId, tagId);
     }
 
     private Note getNoteById(String id) {
@@ -92,18 +79,9 @@ public class NotesApplicationClass implements NotesApplication {
         return null;
     }
 
-    private boolean doesNoteExists(String id) {
-        for (Note note : notes) {
-            if (note.getId().equals(id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private Tag getTagById(String id) {
         for (Tag tag : tags) {
-            if (tag.getTagId().equals(id)) {
+            if (tag.getId().equals(id)) {
                 return tag;
             }
         }

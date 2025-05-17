@@ -1,16 +1,12 @@
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface Note {
-    String getDate();
-
     String getId();
-
+    LocalDate getDate();
     String getContent();
-
-    void matchTag(NotesApplication.Tag tag);
-
-    void unmatchTag(NotesApplication.Tag tag);
-
-    boolean doesTagMatched(NotesApplication.Tag tag);
-
+    List<Tag> getTags();
+    List<String> getLinks();
+    boolean addTag(Tag tag);
+    boolean removeTag(Tag tag);
 }

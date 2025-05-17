@@ -1,16 +1,7 @@
-public interface PermanentNote extends Note{
-    String getId();
+import java.time.LocalDate;
 
-    String getContent();
-
-    String getDate();
-
-    void setId(String id);
-
-    void setContent(String content);
-
-    void setDate(String date);
-
-    @Override
-    String toString();
+public class PermanentNote extends AbstractNote {
+    public PermanentNote(String id, LocalDate date, String content) {
+        super(id, date, content);
+    }
 }

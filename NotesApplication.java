@@ -16,24 +16,4 @@ public interface NotesApplication {
 
     void removeTag(String noteId, String tagId) throws Exceptions;
 
-    public class Tag{
-        private String tagId;
-        ArrayList<Note> tagNotes;
-        Tag(String tagId) {
-            this.tagId = tagId;
-            this.tagNotes = new ArrayList<>();
-        }
-
-        public String getTagId() {
-            return tagId;
-        }
-
-        public void setTagId(String tagId) {
-            this.tagId = tagId;
-        }
-        public void addNote(Note note) {
-            tagNotes.add(note);
-        }
-    }
-
 }
